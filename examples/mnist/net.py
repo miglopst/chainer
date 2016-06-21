@@ -11,6 +11,7 @@ class MnistMLP(chainer.Chain):
     build your own neural net.
 
     """
+
     def __init__(self, n_in, n_units, n_out):
         super(MnistMLP, self).__init__(
             l1=L.Linear(n_in, n_units),
@@ -31,6 +32,7 @@ class MnistMLPParallel(chainer.Chain):
     This chain combines four small MLPs on two different devices.
 
     """
+
     def __init__(self, n_in, n_units, n_out):
         super(MnistMLPParallel, self).__init__(
             first0=MnistMLP(n_in, n_units // 2, n_units).to_gpu(0),

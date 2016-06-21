@@ -10,6 +10,7 @@ class RNNLM(chainer.Chain):
     This is an example of deep LSTM network for infinite length input.
 
     """
+
     def __init__(self, n_vocab, n_units, train=True):
         super(RNNLM, self).__init__(
             embed=L.EmbedID(n_vocab, n_units),

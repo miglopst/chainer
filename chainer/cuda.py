@@ -96,6 +96,7 @@ class DummyDeviceType(object):
     This class is used to represent CPU device.
 
     """
+
     def __int__(self):
         return -1
 
