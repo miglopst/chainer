@@ -303,7 +303,8 @@ cdef class ndarray:
 
         a = self
         if not self._c_contiguous:
-            a = ascontiguousarray(self)
+            with self.device:
+                a = ascontiguousarray(self)
             if a.data.device.id == device.get_device_id():
                 return a
         newarray = ndarray(a.shape, a.dtype)
@@ -1890,8 +1891,6 @@ cpdef ndarray tensordot_core(
     b = b.astype(dtype, copy=False)
 
     if not a.size or not b.size:
-        if a.size or b.size:
-            raise ValueError('cannot dot zero-sized and non-zero-sized arrays')
         if out is None:
             out = ndarray(ret_shape, dtype=ret_dtype)
         out.fill(0)
@@ -2344,7 +2343,7 @@ cdef _mean = create_reduction_func(
 # scan
 # -----------------------------------------------------------------------------
 
-@util.memoize()
+@util.memoize(for_each_device=True)
 def _inclusive_scan_kernel(dtype, block_size):
     """return Prefix Sum(Scan) cuda kernel
 
@@ -2411,7 +2410,7 @@ def _inclusive_scan_kernel(dtype, block_size):
 
     return module.get_function(name)
 
-@util.memoize()
+@util.memoize(for_each_device=True)
 def _add_scan_blocked_sum_kernel(dtype):
     name = "add_scan_blocked_sum_kernel"
     dtype = _get_typename(dtype)
@@ -2431,7 +2430,7 @@ def _add_scan_blocked_sum_kernel(dtype):
 
     return module.get_function(name)
 
-@util.memoize()
+@util.memoize(for_each_device=True)
 def _nonzero_1d_kernel(src_dtype, index_dtype):
     name = "nonzero_1d_kernel"
     src_dtype = _get_typename(src_dtype)
@@ -2454,7 +2453,7 @@ def _nonzero_1d_kernel(src_dtype, index_dtype):
 
     return module.get_function(name)
 
-@util.memoize()
+@util.memoize(for_each_device=True)
 def _nonzero_kernel(src_dtype, src_ndim, index_dtype, dst_dtype):
     name = "nonzero_kernel"
     src_dtype = _get_typename(src_dtype)
