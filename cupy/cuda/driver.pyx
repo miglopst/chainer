@@ -56,7 +56,7 @@ class CUDADriverError(RuntimeError):
 @cython.profile(False)
 cpdef inline check_status(int status):
     if status != 0:
-        raise CUDADriverError(status)
+#        raise CUDADriverError(status)
 
 
 ###############################################################################
